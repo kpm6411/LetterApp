@@ -10,6 +10,7 @@ namespace LetterApp
     {
         public string filename = "", contents = "";
         public int studentId;
+        public bool processed;
         public string? directory;
     }
 }

@@ -10,7 +10,7 @@ namespace LetterApp
 {
     public class LetterService : ILetterService
     {
-        public void CombineLetters(List<DirectoryInfo> dateDirList1, List<DirectoryInfo> dateDirList2, string outputPath)
+        public void CombineLetters(List<DirectoryInfo> dateDirList1, List<DirectoryInfo> dateDirList2, string outputPath, string archivePath)
         {
             List<Letter> letters1 = new List<Letter>();
             List<Letter> letters2 = new List<Letter>();
@@ -27,22 +27,22 @@ namespace LetterApp
                     Letter letter2 = letters2[matchingLetterIndex];
                     string file1 = letter.directory + letter.filename;
                     string file2 = letter2.directory + letter2.filename;
-                    string resultName = "combined-" + letter.studentId;
+                    string resultName = outputPath + "combined-" + letter.studentId + ".txt";
                     CombineTwoLetters(file1, file2, resultName);
-                    DeleteFile(file1);
-                    DeleteFile(file2);
+                    MoveFile(file1, archivePath + letter.filename);
+                    MoveFile(file2, archivePath + letter2.filename);
                 } else
                 {
                     string source = letter.directory + letter.filename;
-                    string destination = outputPath + letter.filename;
-                    File.Move(source, destination);
+                    string destination = archivePath + letter.filename;
+                    MoveFile(source, destination);
                 }
             }
             foreach (Letter letter in letters2)
             {
                 string source = letter.directory + letter.filename;
-                string destination = outputPath + letter.filename;
-                File.Move(source, destination);
+                string destination = archivePath + letter.filename;
+                MoveFile(source, destination);
             }
         }
 
@@ -66,17 +66,15 @@ namespace LetterApp
 
         public void CombineTwoLetters(string inputFile1, string inputFile2, string resultFile)
         {
-            string outputDirectory = "./CombinedLetters/Output/";
             string combinedText = File.ReadAllText(inputFile1) + "\n\n" + File.ReadAllText(inputFile2);
-            string outputFilename = outputDirectory + "combined-" + inputFile1.Split('-', '.')[1] + ".txt";
-            File.WriteAllText(outputFilename, combinedText);
+            File.WriteAllText(resultFile, combinedText);
         }
 
-        public void DeleteFile(string filename)
+        public void MoveFile(string source, string destination)
         {
-            if (File.Exists(filename))
+            if (File.Exists(source))
             {
-                File.Delete(filename);
+                File.Move(source, destination);
             }
         }
 
@@ -86,6 +84,11 @@ namespace LetterApp
             {
                 Directory.Delete(dir.FullName);
             }
+        }
+
+        public void createReport()
+        {
+
         }
     }
 }
