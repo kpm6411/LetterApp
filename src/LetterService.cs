@@ -14,10 +14,27 @@ namespace LetterApp
         {
             List<Letter> letters1 = new List<Letter>();
             List<Letter> letters2 = new List<Letter>();
+            List<Letter> archivedLetters = new List<Letter>();
 
             if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
             letters1 = getLetters(dateDirList1);
             letters2 = getLetters(dateDirList2);
+            if (Directory.Exists(archivePath))
+            {
+                archivedLetters = getLetters(new DirectoryInfo(archivePath).GetDirectories().ToList());
+
+                foreach (Letter letter in archivedLetters)
+                {
+                    if (letter.filename.Split('-')[0] == "admission")
+                    {
+                        letters1.Add(letter);
+                    }
+                    else
+                    {
+                        letters2.Add(letter);
+                    }
+                }
+            }
 
             foreach (Letter letter in letters1)
             {
