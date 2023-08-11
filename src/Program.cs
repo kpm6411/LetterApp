@@ -15,4 +15,3 @@ List<DirectoryInfo> scholarshipDateDirList = scholarshipInputDir.GetDirectories(
 letterService.CombineLetters(admissionDateDirList, scholarshipDateDirList, outputPath, archivePath);
 letterService.DeleteDateDirectories(admissionDateDirList);
 letterService.DeleteDateDirectories(scholarshipDateDirList);
-Console.ReadLine();

@@ -14,12 +14,12 @@ namespace LetterApp
         {
             List<Letter> letters1 = new List<Letter>();
             List<Letter> letters2 = new List<Letter>();
-            List<Letter> combinedLetters = new List<Letter>();
 
+            if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
             letters1 = getLetters(dateDirList1);
             letters2 = getLetters(dateDirList2);
 
-            foreach (Letter letter in letters1) 
+            foreach (Letter letter in letters1)
             {
                 int matchingLetterIndex = letters2.FindIndex(p => p.studentId == letter.studentId);
                 if (matchingLetterIndex >= 0)
@@ -28,9 +28,7 @@ namespace LetterApp
                     string file1 = letter.directory + "\\" + letter.filename;
                     string file2 = letter2.directory + "\\" + letter2.filename;
                     string resultName = outputPath + "combined-" + letter.studentId + ".txt";
-                    if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
                     CombineTwoLetters(file1, file2, resultName);
-                    combinedLetters.Add(letter);
                     if (!Directory.Exists(archivePath)) Directory.CreateDirectory(archivePath);
                     MoveFile(file1, archivePath + "\\" + letter.filename);
                     MoveFile(file2, archivePath + "\\" + letter2.filename);
@@ -49,7 +47,7 @@ namespace LetterApp
                 MoveFile(source, destination);
             }
 
-            createReport(combinedLetters);
+            createReport(outputPath);
         }
 
         private List<Letter> getLetters(List<DirectoryInfo> dirList)
@@ -59,12 +57,15 @@ namespace LetterApp
             {
                 foreach (FileInfo file in dir.GetFiles())
                 {
-                    Letter letter = new Letter();
-                    letter.filename = file.Name;
-                    letter.directory = file.DirectoryName;
-                    letter.studentId = Int32.Parse(letter.filename.Split('-', '.')[1]);
-                    letter.contents = File.ReadAllText(file.FullName);
-                    letters.Add(letter);
+                    if (file.Name != "report.txt")
+                    {
+                        Letter letter = new Letter();
+                        letter.filename = file.Name;
+                        letter.directory = file.DirectoryName;
+                        letter.studentId = Int32.Parse(letter.filename.Split('-', '.')[1]);
+                        letter.contents = File.ReadAllText(file.FullName);
+                        letters.Add(letter);
+                    }
                 }
             }
             return letters;
@@ -92,14 +93,23 @@ namespace LetterApp
             }
         }
 
-        public void createReport(List<Letter> letters)
+        public void createReport(string outputPath)
         {
-            Console.WriteLine($"{DateTime.Now.ToString("MM/dd/yyyy")} Report\n\n--------------------------------\n");
-            Console.WriteLine($"Number of Combined Letters: {letters.Count}");
+            List<DirectoryInfo> dir = new List<DirectoryInfo>
+            {
+                new DirectoryInfo(outputPath)
+            };
+            List<Letter> letters = getLetters(dir);
+            string reportPath = $"{outputPath}\\report.txt";
+            string reportText = "";
+
+            reportText += $"{DateTime.Now.ToString("MM/dd/yyyy")} Report\n\n--------------------------------\n\n";
+            reportText += $"Number of Combined Letters: {letters.Count}\n";
             foreach (Letter letter in letters)
             {
-                Console.WriteLine($"\t{letter.studentId}");
+                reportText += $"\t{letter.studentId}\n";
             }
+            File.WriteAllText(reportPath, reportText);
         }
     }
 }
