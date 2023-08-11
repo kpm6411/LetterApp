@@ -29,6 +29,7 @@ namespace LetterApp
                     string file2 = letter2.directory + letter2.filename;
                     string resultName = outputPath + "combined-" + letter.studentId + ".txt";
                     CombineTwoLetters(file1, file2, resultName);
+                    combinedLetters.Add(letter);
                     MoveFile(file1, archivePath + letter.filename);
                     MoveFile(file2, archivePath + letter2.filename);
                 } else
@@ -44,6 +45,8 @@ namespace LetterApp
                 string destination = archivePath + letter.filename;
                 MoveFile(source, destination);
             }
+
+            createReport(combinedLetters);
         }
 
         private List<Letter> getLetters(List<DirectoryInfo> dirList)
@@ -86,9 +89,14 @@ namespace LetterApp
             }
         }
 
-        public void createReport()
+        public void createReport(List<Letter> letters)
         {
-
+            Console.WriteLine($"{DateTime.Now.ToString("MM/dd/yyyy")} Report\n\n--------------------------------\n");
+            Console.WriteLine($"Number of Combined Letters: {letters.Count}");
+            foreach (Letter letter in letters)
+            {
+                Console.WriteLine($"\t{letter.studentId}");
+            }
         }
     }
 }
