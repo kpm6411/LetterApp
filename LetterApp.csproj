@@ -7,4 +7,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="CombinedLetters\Input\Admission\" />
+    <Folder Include="CombinedLetters\Input\Scholarship\" />
+    <Folder Include="CombinedLetters\Archive\" />
+    <Folder Include="CombinedLetters\Output\" />
+  </ItemGroup>
+
 </Project>
