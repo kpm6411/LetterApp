@@ -25,24 +25,27 @@ namespace LetterApp
                 if (matchingLetterIndex >= 0)
                 {
                     Letter letter2 = letters2[matchingLetterIndex];
-                    string file1 = letter.directory + letter.filename;
-                    string file2 = letter2.directory + letter2.filename;
+                    string file1 = letter.directory + "\\" + letter.filename;
+                    string file2 = letter2.directory + "\\" + letter2.filename;
                     string resultName = outputPath + "combined-" + letter.studentId + ".txt";
+                    if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
                     CombineTwoLetters(file1, file2, resultName);
                     combinedLetters.Add(letter);
-                    MoveFile(file1, archivePath + letter.filename);
-                    MoveFile(file2, archivePath + letter2.filename);
+                    if (!Directory.Exists(archivePath)) Directory.CreateDirectory(archivePath);
+                    MoveFile(file1, archivePath + "\\" + letter.filename);
+                    MoveFile(file2, archivePath + "\\" + letter2.filename);
                 } else
                 {
-                    string source = letter.directory + letter.filename;
-                    string destination = archivePath + letter.filename;
+                    string source = letter.directory + "\\" + letter.filename;
+                    string destination = archivePath + "\\" + letter.filename;
+                    if (!Directory.Exists(archivePath)) Directory.CreateDirectory(archivePath);
                     MoveFile(source, destination);
                 }
             }
             foreach (Letter letter in letters2)
             {
-                string source = letter.directory + letter.filename;
-                string destination = archivePath + letter.filename;
+                string source = letter.directory + "\\" + letter.filename;
+                string destination = archivePath + "\\" + letter.filename;
                 MoveFile(source, destination);
             }
 
@@ -77,7 +80,7 @@ namespace LetterApp
         {
             if (File.Exists(source))
             {
-                File.Move(source, destination);
+                File.Move(source, destination, true);
             }
         }
 
